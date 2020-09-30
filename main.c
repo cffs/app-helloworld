@@ -1,48 +1,11 @@
 #include <stdio.h>
-#include <unistd.h>
-#include <uk/essentials.h>
 
-/* Import user configuration: */
-#include <uk/config.h>
+__thread char one_byte_to_mess_up_alignment;
+__thread __int128 large_int __attribute__((aligned(16)));
+__int128 not_so_large_int = 42;
 
-#if CONFIG_APPHELLOWORLD_SPINNER
-static const char *spinner[] = {
-	">))'>        ",
-	" >))'>       ",
-	"  >))'>      ",
-	"   >))'>     ",
-	"    >))'o    ",
-	"     >))'>°  ",
-	"     <'((< ° ",
-	"    <'((<   '",
-	"   <'((<     ",
-	"  <'((<      ",
-	" <'((<       ",
-	"<'((<        ",
-};
-#endif
+int main(void) {
+    large_int = not_so_large_int; // Likely to use SSE instruction
 
-int main(int argc, char *argv[])
-{
-#if CONFIG_APPHELLOWORLD_PRINTARGS || CONFIG_APPHELLOWORLD_SPINNER
-	int i;
-#endif
-	printf("Hello world!\n");
-
-#if CONFIG_APPHELLOWORLD_PRINTARGS
-	printf("Arguments: ");
-	for (i=0; i<argc; ++i)
-		printf(" \"%s\"", argv[i]);
-	printf("\n");
-#endif
-
-#if CONFIG_APPHELLOWORLD_SPINNER
-	i = 0;
-	printf("\n");
-	while (1) {
-		i %= ARRAY_SIZE(spinner);
-		printf("\r%s", spinner[i++]);
-		sleep(1);
-	}
-#endif
+    return 0;
 }

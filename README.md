@@ -1,10 +1,17 @@
-# Unikraft "hello world" Application
+# Test for TLS issue
 
-To build and run this application please use the `kraft` script:
+This application is likely to crash due to TLS alignment issues.
 
-    pip3 install git+https://github.com/unikraft/kraft.git
-    mkdir my-first-unikernel && cd my-first-unikernel
-    kraft up -p PLATFORM -m ARCHITECTURE helloworld
+Do a `make menuconfig`, and:
 
-For more information about `kraft` type ```kraft -h``` or read the
-[documentation](http://docs.unikraft.org).
+- enable the "Linux User Space" platform;
+- enable the musl library;
+- disable the welcome banner in ukboot library (it does not work at the moment
+  with musl).
+
+Do `make`.
+
+The resulting application is very likely to crash on an unaligned `movaps`
+instruction.
+
+I suspect the same happens with newlib, but it remains to be tested.
